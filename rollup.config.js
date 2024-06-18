@@ -9,7 +9,7 @@ export default defineConfig({
     output:{
         dir:'dist',
         format:'es',
-        name:"responsive-react-pagination-bootstrap",
+        name:"data-paginate",
     },
     external:['react','react-dom'],
     plugins:[typescript({tsconfig:'tsconfig.json'})]

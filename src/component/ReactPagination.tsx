@@ -1,88 +1,48 @@
-import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useMemo } from 'react';
 
-interface EllipsisPaginationProps {
-  totalPages: number;
-  currentPage: number;
-  onPageChange: (page: number) => void;
-  md?: number;
-  lg?: number;
+interface UsePaginationResult<T> {
+    paginatedData: T[];
+    page: number;
+    totalPages: number;
+    nextPage: () => void;
+    prevPage: () => void;
+    goToPage: (pageNumber: number) => void;
 }
 
-const Pagination: React.FC<EllipsisPaginationProps> = ({ totalPages, currentPage, onPageChange, md, lg }) => {
-  const [visiblePages, setVisiblePages] = useState<number>(lg || 10);
+function usePagination<T>(data: T[], limit: number, initialPage: number = 1): UsePaginationResult<T> {
+    const [page, setPage] = useState<number>(initialPage);
 
-  useEffect(() => {
-    const updateVisiblePages = () => {
-      const newVisiblePages = window.innerWidth < 900 ? (md || 5) : (lg || 10);
-      setVisiblePages(newVisiblePages);
-    };
-    updateVisiblePages();
-    window.addEventListener("resize", updateVisiblePages);
-    return () => {
-      window.removeEventListener("resize", updateVisiblePages);
-    };
-  }, [md, lg]);
+    const totalPages = useMemo<number>(() => {
+        return Math.ceil(data.length / limit);
+    }, [data.length, limit]);
 
-  const generatePaginationItems = () => {
-    const items: React.ReactNode[] = [];
+    const paginatedData = useMemo<T[]>(() => {
+        const start = (page - 1) * limit;
+        const end = start + limit;
+        return data.slice(start, end);
+    }, [data, page, limit]);
 
-    const ellipsisStyle = {
-      padding: "0.5rem 0.75rem",
-      cursor: "default"
+    const nextPage = () => {
+        setPage((prevPage:number) => Math.min(prevPage + 1, totalPages));
     };
 
-    if (totalPages <= visiblePages) {
-      for (let i = 1; i <= totalPages; i++) {
-        items.push(
-          <li key={i} style={{ padding: "0.5rem 0.75rem", backgroundColor: i === currentPage ? 'blue' : 'gray', color: i === currentPage ? 'white' : 'black', cursor: 'pointer' }} onClick={() => onPageChange(i)}>
-            {i}
-          </li>
-        );
-      }
-    } else {
-      const leftEllipsis = currentPage > Math.floor(visiblePages / 2) + 1;
-      const rightEllipsis = currentPage < totalPages - Math.floor(visiblePages / 2);
+    const prevPage = () => {
+        setPage((prevPage:number) => Math.max(prevPage - 1, 1));
+    };
 
-      if (!leftEllipsis) {
-        for (let i = 1; i <= visiblePages; i++) {
-          items.push(
-            <li key={i} style={{ padding: "0.5rem 0.75rem", backgroundColor: i === currentPage ? 'blue' : 'gray', color: i === currentPage ? 'white' : 'black', cursor: 'pointer' }} onClick={() => onPageChange(i)}>
-              {i}
-            </li>
-          );
-        }
-        items.push(<li key="ellipsis" style={ellipsisStyle}>...</li>);
-      } else if (!rightEllipsis) {
-        items.push(<li key="ellipsis" style={ellipsisStyle}>...</li>);
-        for (let i = totalPages - visiblePages + 1; i <= totalPages; i++) {
-          items.push(
-            <li key={i} style={{ padding: "0.5rem 0.75rem", backgroundColor: i === currentPage ? 'blue' : 'gray', color: i === currentPage ? 'white' : 'black', cursor: 'pointer' }} onClick={() => onPageChange(i)}>
-              {i}
-            </li>
-          );
-        }
-      } else {
-        items.push(<li key="ellipsis" style={ellipsisStyle}>...</li>);
-        for (let i = currentPage - Math.floor(visiblePages / 2); i <= currentPage + Math.floor(visiblePages / 2); i++) {
-          items.push(
-            <li key={i} style={{ padding: "0.5rem 0.75rem", backgroundColor: i === currentPage ? 'blue' : 'gray', color: i === currentPage ? 'white' : 'black', cursor: 'pointer' }} onClick={() => onPageChange(i)}>
-              {i}
-            </li>
-          );
-        }
-        items.push(<li key="ellipsis" style={ellipsisStyle}>...</li>);
-      }
-    }
+    const goToPage = (pageNumber: number) => {
+        const page = Math.max(1, Math.min(pageNumber, totalPages));
+        setPage(page);
+    };
 
-    return items;
-  };
+    return {
+        paginatedData,
+        page,
+        totalPages,
+        nextPage,
+        prevPage,
+        goToPage,
+    };
+}
 
-  return (
-    <ul style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem' }}>
-      {generatePaginationItems()}
-    </ul>
-  );
-};
-
-export default Pagination;
+export default usePagination;

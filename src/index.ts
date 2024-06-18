@@ -1,3 +1,4 @@
-import Pagination from "./component/ReactPagination";
+import usePagination from "./component/ReactPagination";
 
-export default Pagination
+
+export default usePagination;
