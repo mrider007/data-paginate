@@ -2,7 +2,7 @@
 this is pagination hook with array of data
 
 import React from 'react';
-import { usePagination } from 'react-pagination-component';
+import { usePagination } from 'data-paginate';
 
 const data = [
     { id: 1, name: 'Item 1' },
