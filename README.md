@@ -1,6 +1,15 @@
 # data-paginate
-this is pagination hook with array of data
 
+`data-paginate` is a React hook for handling pagination with an array of data. It provides an easy way to paginate data with simple navigation functions.
+
+## Installation
+```sh
+npm install react-pagination-component
+```
+
+## Usage
+
+```jsx
 import React from 'react';
 import { usePagination } from 'react-pagination-component';
 
@@ -44,23 +53,23 @@ function MyComponent() {
 }
 
 export default MyComponent;
+```
 
-# Props
-PaginatedComponent Props
-paginatedData: Array of items to display on the current page.
-page: Current page number.
-totalPages: Total number of pages.
-onNextPage: Function to handle next page navigation.
-onPrevPage: Function to handle previous page navigation.
-onGoToPage: Function to handle navigating to a specific page.
-usePagination Hook Parameters
-data: Array of items to paginate.
-limit: Number of items per page.
-initialPage: Initial page number (default: 1).
-usePagination Hook Return Value
-paginatedData: Array of items for the current page.
-page: Current page number.
-totalPages: Total number of pages.
-nextPage: Function to navigate to the next page.
-prevPage: Function to navigate to the previous page.
-goToPage: Function to navigate to a specific page.
+## Props
+
+### `usePagination` Hook Parameters
+- **`data`** *(Array)* - Array of items to paginate.
+- **`limit`** *(Number)* - Number of items per page.
+- **`initialPage`** *(Number, optional, default: `1`)* - Initial page number.
+
+### `usePagination` Hook Return Value
+- **`paginatedData`** *(Array)* - Items for the current page.
+- **`page`** *(Number)* - Current page number.
+- **`totalPages`** *(Number)* - Total number of pages.
+- **`nextPage`** *(Function)* - Moves to the next page.
+- **`prevPage`** *(Function)* - Moves to the previous page.
+- **`goToPage(pageNumber)`** *(Function)* - Navigates to a specific page.
+
+## License
+This project is licensed under the ISC License.
+
